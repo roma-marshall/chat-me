@@ -46,13 +46,25 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { getDatabase, set, get, ref as firebaseRef, onValue } from 'firebase/database'
+import {onMounted, ref} from 'vue'
+import {getDatabase, onValue, push, ref as firebaseRef} from 'firebase/database'
 
 const id = ref(0)
 const timestamp = ref([])
 const message = ref('')
 const messages = ref([])
+
+const readFromDB = () => {
+  const db = getDatabase()
+  const starCountRef = firebaseRef(db, 'chats/')
+  onValue(starCountRef, (snapshot) => {
+    messages.value = snapshot.val()
+  })
+}
+
+onMounted(() => {
+  readFromDB()
+})
 
 const sendMessage = () => {
   if (message.value.length <= 1) {
@@ -62,19 +74,17 @@ const sendMessage = () => {
     timestamp.value.unshift(date.getHours() + ':' + date.getMinutes())
 
     const db = getDatabase()
-    set(firebaseRef(db, 'chats/' + id.value), {
-      id: id.value,
+    push(firebaseRef(db, 'chats'), {
       message: message.value,
       timestamp: date.getHours() + ':' + date.getMinutes()
     })
+        .then(() => {
+          console.log('Data successfully added without overwriting.')
+        })
+        .catch((error) => {
+          console.error('Error adding data: ', error)
+        })
 
-    messages.value.unshift(
-        {
-          id: id.value,
-          message: message.value,
-          timestamp: date.getHours() + ':' + date.getMinutes()
-        }
-    )
     id.value++
     message.value = ''
   }
