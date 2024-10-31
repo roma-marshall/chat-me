@@ -20,35 +20,72 @@
         </div>
       </div>
     </div>
-    <textarea @keyup.enter="sendMessage" v-model="message" type="text" class="border h-20 resize-none py-2 px-4 outline-none rounded" />
-    <div class="flex justify-center">
+    <textarea
+        @keyup.enter="sendMessage"
+        v-model="message"
+        type="text"
+        class="border h-20 resize-none py-2 px-4 outline-none rounded" />
+    <div class="flex justify-center space-x-4">
       <button
           @click="sendMessage"
-          class="hover:bg-blue-500 bg-black text-white py-2 px-5 rounded">send message</button>
+          class="hover:bg-blue-500 bg-blue-400 text-white py-2 px-5 rounded">
+        send message
+      </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { getDatabase, onValue, push, query, orderByKey, ref as firebaseRef } from 'firebase/database'
 
-const id = ref(0)
 const timestamp = ref([])
 const message = ref('')
 const messages = ref([])
 
-const sendMessage = () => {
-  const date = new Date()
-  timestamp.value.unshift(date.getHours() + ':' + date.getMinutes())
+const readFromDB = () => {
+  const db = getDatabase();
+  const messagesRef = firebaseRef(db, 'chats');
 
-  messages.value.unshift(
-    {
-      id: id.value,
+  // sort by key
+  const sortedQuery = query(messagesRef, orderByKey());
+
+  onValue(sortedQuery, (snapshot) => {
+    const temp = [];
+    snapshot.forEach((childSnapshot) => {
+      temp.push({ id: childSnapshot.key, ...childSnapshot.val() })
+    })
+
+    // reversing an array for reverse ordering
+    temp.reverse()
+    messages.value = temp
+  })
+}
+
+onMounted(() => {
+  readFromDB()
+})
+
+const sendMessage = () => {
+  if (message.value.length <= 1) {
+    message.value = ''
+  } else {
+    const date = new Date()
+    timestamp.value.unshift(date.getHours() + ':' + date.getMinutes())
+
+    const db = getDatabase()
+    push(firebaseRef(db, 'chats'), {
       message: message.value,
       timestamp: date.getHours() + ':' + date.getMinutes()
-    }
-  )
-  id.value++
-  message.value = ''
+    })
+        .then(() => {
+          console.log('Data successfully added without overwriting.')
+        })
+        .catch((error) => {
+          console.error('Error adding data: ', error)
+        })
+
+    message.value = ''
+  }
 }
 </script>
