@@ -24,6 +24,7 @@
         @keyup.enter="sendMessage"
         v-model="message"
         type="text"
+        placeholder="Write a message..."
         class="border h-20 resize-none py-2 px-4 outline-none rounded" />
     <div class="flex justify-center space-x-4">
       <button
