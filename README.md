@@ -1,6 +1,6 @@
 # Chat-me online chat
 
-The single page application build on Vue3, Firebase, and Tailwind CSS
+The single page application build on Vue3, Firebase and Tailwind CSS
 
 ## Recommended Installation
 
