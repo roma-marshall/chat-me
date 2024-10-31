@@ -11,4 +11,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send Request to Log
-        run: curl -X GET https://your-vercel-deployment-url/api/log
+        run: curl -X GET https://xchat-me.vercel.app/api/log
