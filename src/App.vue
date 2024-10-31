@@ -31,27 +31,32 @@
           class="hover:bg-blue-500 bg-blue-400 text-white py-2 px-5 rounded">
         send message
       </button>
+      <button
+          @click="removeMessage"
+          class="hover:bg-red-500 bg-red-400 text-white py-2 px-5 rounded">
+        remove message
+      </button>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getDatabase, onValue, push, query, orderByKey, ref as firebaseRef } from 'firebase/database'
+import { getDatabase, onValue, push, query, orderByKey, remove, ref as firebaseRef } from 'firebase/database'
 
 const timestamp = ref([])
 const message = ref('')
 const messages = ref([])
 
 const readFromDB = () => {
-  const db = getDatabase();
-  const messagesRef = firebaseRef(db, 'chats');
+  const db = getDatabase()
+  const messagesRef = firebaseRef(db, 'chats')
 
   // sort by key
-  const sortedQuery = query(messagesRef, orderByKey());
+  const sortedQuery = query(messagesRef, orderByKey())
 
   onValue(sortedQuery, (snapshot) => {
-    const temp = [];
+    const temp = []
     snapshot.forEach((childSnapshot) => {
       temp.push({ id: childSnapshot.key, ...childSnapshot.val() })
     })
@@ -87,5 +92,19 @@ const sendMessage = () => {
 
     message.value = ''
   }
+}
+
+const removeMessage = () => {
+  const db = getDatabase()
+  const messagesRef = firebaseRef(db, 'chats')
+
+  // deleting all chats
+  remove(messagesRef)
+      .then(() => {
+        console.log("All chats have been successfully deleted.")
+      })
+      .catch((error) => {
+        console.error("Error when deleting chats: ", error)
+      })
 }
 </script>
