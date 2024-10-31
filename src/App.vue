@@ -36,12 +36,18 @@
           class="hover:bg-red-500 bg-red-400 text-white py-2 px-5 rounded">
         clear
       </button>
+      <button
+          @click="readFromDB"
+          class="hover:bg-red-500 bg-red-400 text-white py-2 px-5 rounded">
+        read
+      </button>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { getDatabase, set, get, ref as firebaseRef, onValue } from 'firebase/database'
 
 const id = ref(0)
 const timestamp = ref([])
@@ -54,6 +60,13 @@ const sendMessage = () => {
   } else {
     const date = new Date()
     timestamp.value.unshift(date.getHours() + ':' + date.getMinutes())
+
+    const db = getDatabase()
+    set(firebaseRef(db, 'chats/' + id.value), {
+      id: id.value,
+      message: message.value,
+      timestamp: date.getHours() + ':' + date.getMinutes()
+    })
 
     messages.value.unshift(
         {
