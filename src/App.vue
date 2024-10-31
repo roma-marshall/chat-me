@@ -20,11 +20,22 @@
         </div>
       </div>
     </div>
-    <textarea @keyup.enter="sendMessage" v-model="message" type="text" class="border h-20 resize-none py-2 px-4 outline-none rounded" />
-    <div class="flex justify-center">
+    <textarea
+        @keyup.enter="sendMessage"
+        v-model="message"
+        type="text"
+        class="border h-20 resize-none py-2 px-4 outline-none rounded" />
+    <div class="flex justify-center space-x-4">
       <button
           @click="sendMessage"
-          class="hover:bg-blue-500 bg-black text-white py-2 px-5 rounded">send message</button>
+          class="hover:bg-blue-500 bg-blue-400 text-white py-2 px-5 rounded">
+        send message
+      </button>
+      <button
+          @click="clearMessage"
+          class="hover:bg-red-500 bg-red-400 text-white py-2 px-5 rounded">
+        clear
+      </button>
     </div>
   </div>
 </template>
@@ -38,17 +49,25 @@ const message = ref('')
 const messages = ref([])
 
 const sendMessage = () => {
-  const date = new Date()
-  timestamp.value.unshift(date.getHours() + ':' + date.getMinutes())
+  if (message.value.length <= 1) {
+    message.value = ''
+  } else {
+    const date = new Date()
+    timestamp.value.unshift(date.getHours() + ':' + date.getMinutes())
 
-  messages.value.unshift(
-    {
-      id: id.value,
-      message: message.value,
-      timestamp: date.getHours() + ':' + date.getMinutes()
-    }
-  )
-  id.value++
-  message.value = ''
+    messages.value.unshift(
+        {
+          id: id.value,
+          message: message.value,
+          timestamp: date.getHours() + ':' + date.getMinutes()
+        }
+    )
+    id.value++
+    message.value = ''
+  }
+}
+
+const clearMessage = () => {
+  messages.value = []
 }
 </script>
