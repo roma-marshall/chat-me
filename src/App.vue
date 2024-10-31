@@ -31,34 +31,34 @@
           class="hover:bg-blue-500 bg-blue-400 text-white py-2 px-5 rounded">
         send message
       </button>
-      <button
-          @click="clearMessage"
-          class="hover:bg-red-500 bg-red-400 text-white py-2 px-5 rounded">
-        clear
-      </button>
-      <button
-          @click="readFromDB"
-          class="hover:bg-red-500 bg-red-400 text-white py-2 px-5 rounded">
-        read
-      </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue'
-import {getDatabase, onValue, push, ref as firebaseRef} from 'firebase/database'
+import { ref, onMounted } from 'vue'
+import { getDatabase, onValue, push, query, orderByKey, ref as firebaseRef } from 'firebase/database'
 
-const id = ref(0)
 const timestamp = ref([])
 const message = ref('')
 const messages = ref([])
 
 const readFromDB = () => {
-  const db = getDatabase()
-  const starCountRef = firebaseRef(db, 'chats/')
-  onValue(starCountRef, (snapshot) => {
-    messages.value = snapshot.val()
+  const db = getDatabase();
+  const messagesRef = firebaseRef(db, 'chats');
+
+  // sort by key
+  const sortedQuery = query(messagesRef, orderByKey());
+
+  onValue(sortedQuery, (snapshot) => {
+    const temp = [];
+    snapshot.forEach((childSnapshot) => {
+      temp.push({ id: childSnapshot.key, ...childSnapshot.val() })
+    })
+
+    // reversing an array for reverse ordering
+    temp.reverse()
+    messages.value = temp
   })
 }
 
@@ -85,12 +85,7 @@ const sendMessage = () => {
           console.error('Error adding data: ', error)
         })
 
-    id.value++
     message.value = ''
   }
-}
-
-const clearMessage = () => {
-  messages.value = []
 }
 </script>
