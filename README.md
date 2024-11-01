@@ -1,6 +1,72 @@
-# Chat-me online chat
+# Online Chat
 
-The single page application build on Vue3, Firebase and Tailwind CSS
+Technology Stack used: Vue3, Firebase and Tailwind CSS
+
+## Code snippets
+
+1. Define `firebaseConfig` and configure the API key in the `firebase/config.js` file
+
+```javascript
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_API_KEY, // your api key
+  authDomain: "vue-app-db753.firebaseapp.com",
+  projectId: "vue-app-db753",
+  storageBucket: "vue-app-db753.firebasestorage.app",
+  messagingSenderId: "216666859258",
+  appId: "1:216666859258:web:d8a71442ea367839a3cb43"
+}
+
+export default firebaseConfig
+```
+
+2. Sending messages to Realtime Firebase using the push method
+```javascript
+import { getDatabase, push, ref as firebaseRef } from 'firebase/database'
+
+const db = getDatabase()
+
+push(firebaseRef(db, 'chats'), {
+  message: 'hello world',
+  timestamp: '12:42'
+})
+```
+
+3. Reading messages from Realtime Firebase
+```javascript
+import { getDatabase, onValue, query, orderByKey, remove, ref as firebaseRef } from 'firebase/database'
+
+const readFromDB = () => {
+  const db = getDatabase()
+  const messagesRef = firebaseRef(db, 'chats')
+  
+  onValue(sortedQuery, (snapshot) => {
+    const temp = []
+    snapshot.forEach((childSnapshot) => {
+      temp.push({ id: childSnapshot.key, ...childSnapshot.val() })
+    })
+
+    messages.value = temp
+  })
+}
+```
+
+4. Removing messages from Realtime Firebase using the remove method
+```javascript
+import { getDatabase, remove, ref as firebaseRef } from 'firebase/database'
+
+const removeMessage = () => {
+  const db = getDatabase()
+  const messagesRef = firebaseRef(db, 'chats')
+
+  remove(messagesRef)
+    .then(() => {
+      console.log("Data successfully deleted")
+    })
+    .catch((error) => {
+      console.error("Error deleting data: ", error)
+    })
+}
+```
 
 ## Recommended Installation
 

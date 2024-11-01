@@ -85,7 +85,7 @@ const sendMessage = () => {
       timestamp: date.getHours() + ':' + date.getMinutes()
     })
         .then(() => {
-          console.log('Data successfully added without overwriting.')
+          console.log('Data successfully added')
         })
         .catch((error) => {
           console.error('Error adding data: ', error)
@@ -102,10 +102,10 @@ const removeMessage = () => {
   // deleting all chats
   remove(messagesRef)
       .then(() => {
-        console.log("All chats have been successfully deleted.")
+        console.log("Data successfully deleted")
       })
       .catch((error) => {
-        console.error("Error when deleting chats: ", error)
+        console.error("Error deleting data: ", error)
       })
 }
 </script>
