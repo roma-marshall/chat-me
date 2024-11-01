@@ -35,7 +35,7 @@
       <button
           @click="removeMessage"
           class="hover:bg-red-500 bg-red-400 text-white py-2 px-5 rounded">
-        remove message
+        delete all
       </button>
     </div>
   </div>
