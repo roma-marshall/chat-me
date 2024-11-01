@@ -7,6 +7,6 @@ const firebaseConfig = {
   storageBucket: "vue-app-db753.firebasestorage.app",
   messagingSenderId: "216666859258",
   appId: "1:216666859258:web:d8a71442ea367839a3cb43"
-};
+}
 
 export default firebaseConfig
