@@ -35,9 +35,9 @@ push(firebaseRef(db, 'chats'), {
 ```javascript
 import { getDatabase, onValue, query, orderByKey, remove, ref as firebaseRef } from 'firebase/database'
 
-const readFromDB = () => {
+const readMessage = () => {
   const db = getDatabase()
-  const messagesRef = firebaseRef(db, 'chats')
+  const sortedQuery = query(firebaseRef(db, 'chats'), orderByKey())
   
   onValue(sortedQuery, (snapshot) => {
     const temp = []
@@ -48,6 +48,10 @@ const readFromDB = () => {
     messages.value = temp
   })
 }
+
+onMounted(() => {
+  readMessage()
+})
 ```
 
 4. Removing messages from Realtime Firebase using the remove method
@@ -56,15 +60,7 @@ import { getDatabase, remove, ref as firebaseRef } from 'firebase/database'
 
 const removeMessage = () => {
   const db = getDatabase()
-  const messagesRef = firebaseRef(db, 'chats')
-
-  remove(messagesRef)
-    .then(() => {
-      console.log("Data successfully deleted")
-    })
-    .catch((error) => {
-      console.error("Error deleting data: ", error)
-    })
+  remove(firebaseRef(db, 'chats'))
 }
 ```
 
