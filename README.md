@@ -33,6 +33,7 @@ push(firebaseRef(db, 'chats'), {
 
 3. Reading messages from Realtime Firebase
 ```javascript
+import { onMounted } from 'vue'
 import { getDatabase, onValue, query, orderByKey, remove, ref as firebaseRef } from 'firebase/database'
 
 const readMessage = () => {
