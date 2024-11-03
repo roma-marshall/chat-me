@@ -51,10 +51,9 @@ const messages = ref([])
 
 const readFromDB = () => {
   const db = getDatabase()
-  const messagesRef = firebaseRef(db, 'chats')
 
   // sort by key
-  const sortedQuery = query(messagesRef, orderByKey())
+  const sortedQuery = query(firebaseRef(db, 'chats'), orderByKey())
 
   onValue(sortedQuery, (snapshot) => {
     const temp = []
