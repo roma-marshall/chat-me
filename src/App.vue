@@ -49,7 +49,7 @@ const timestamp = ref([])
 const message = ref('')
 const messages = ref([])
 
-const readFromDB = () => {
+const readMessage = () => {
   const db = getDatabase()
 
   // sort by key
@@ -68,7 +68,7 @@ const readFromDB = () => {
 }
 
 onMounted(() => {
-  readFromDB()
+  readMessage()
 })
 
 const sendMessage = () => {
