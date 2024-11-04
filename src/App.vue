@@ -49,12 +49,11 @@ const timestamp = ref([])
 const message = ref('')
 const messages = ref([])
 
-const readFromDB = () => {
+const readMessage = () => {
   const db = getDatabase()
-  const messagesRef = firebaseRef(db, 'chats')
 
   // sort by key
-  const sortedQuery = query(messagesRef, orderByKey())
+  const sortedQuery = query(firebaseRef(db, 'chats'), orderByKey())
 
   onValue(sortedQuery, (snapshot) => {
     const temp = []
@@ -69,7 +68,7 @@ const readFromDB = () => {
 }
 
 onMounted(() => {
-  readFromDB()
+  readMessage()
 })
 
 const sendMessage = () => {
@@ -97,15 +96,12 @@ const sendMessage = () => {
 
 const removeMessage = () => {
   const db = getDatabase()
-  const messagesRef = firebaseRef(db, 'chats')
-
-  // deleting all chats
-  remove(messagesRef)
+  remove(firebaseRef(db, 'chats'))
       .then(() => {
-        console.log("Data successfully deleted")
+        console.log('Data successfully deleted')
       })
       .catch((error) => {
-        console.error("Error deleting data: ", error)
+        console.error('Error deleting data: ', error)
       })
 }
 </script>
